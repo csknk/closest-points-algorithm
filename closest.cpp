@@ -6,70 +6,112 @@
 #include <string>
 #include <cmath>
 
-using std::vector;
-using std::string;
-using std::pair;
-using std::min;
-
+// https://www.tutorialspoint.com/Closest-Pair-of-Points-Problem
 typedef struct {
 	int x;
 	int y;
-	double distFromOrigin;
 } Point;
+
+typedef struct {
+	Point a;
+	Point b;
+	double dist;
+} Pair;
+
+typedef std::vector<Point>::iterator It;
+double calcDist(Point a, Point b);
+Pair bruteClosest(const std::vector<Point>& v);
+Pair bruteClosest(It start, It End);
+void printPoints(std::vector<Point> v);
+Pair minimalDistance(It SxStart, It SxEnd, It SyStart, It SyEnd, double d);
+double minimalDistance(std::vector<Point> points); 
+
+
+// Consider d to be infinity if d == -1
+Pair minimalDistance(It SxStart, It SxEnd, It SyStart, It SyEnd, double d)
+{
+	// Determine limits
+	auto size = std::distance(SxStart, SxEnd);
+	auto median = std::next(SxStart, size / 2);
+	if (size < 3) {
+		return bruteClosest(SxStart, SxEnd);
+	}
+	std::cout << "(" << median->x << ", " << median->y << ")\n";
+	return bruteClosest(SxStart, SxEnd);
+	// Partition
+	
+	// Merge
+
+}
+
+
+double minimalDistance(std::vector<Point> points) 
+{
+//	Pair closest = bruteClosest(points);
+	sort(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.x < b.x; });
+	std::vector<Point> Sx = points;
+	sort(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.y < b.y; });
+	std::vector<Point> Sy = points;
+	
+	Pair closest = minimalDistance(Sx.begin(), Sx.end(), Sy.begin(), Sy.end(), -1);
+	return closest.dist;
+}
+
+int main() {
+	size_t n;
+	std::cin >> n;
+	std::vector<Point> points(n);
+	for (size_t i = 0; i < n; i++) {
+		std::cin >> points[i].x >> points[i].y;
+	}
+	std::cout << std::fixed;
+	std::cout << std::setprecision(9) << minimalDistance(points) << "\n";
+}
+
+Pair bruteClosest(It start, It end)
+{
+	Pair closest = {};
+	double minDist = -1;
+	for (It i = start; i != end; i++) {
+		for (It j = i + 1; j != end; j++) {
+			double currentDist = calcDist(*i, *j);
+			if (currentDist < minDist || minDist == -1) {
+				closest.a = *i;
+				closest.b = *j;
+				closest.dist = currentDist;
+				minDist = currentDist;
+			}
+		}	
+	}
+	return closest;
+}
+
+Pair bruteClosest(const std::vector<Point>& v)
+{
+	Pair closest = {};
+	double minDist = -1;
+	for (size_t i = 0; i < v.size(); i++) {
+		for (size_t j = i + 1; j < v.size(); j++) {
+			double currentDist = calcDist(v[i], v[j]);
+			if (currentDist < minDist || minDist == -1) {
+				closest.a = v[i];
+				closest.b = v[j];
+				closest.dist = currentDist;
+				minDist = currentDist;
+			}
+		}
+	}
+	return closest;
+}
 
 double calcDist(Point a, Point b)
 {
 	return pow(pow(a.x - b.x, 2) + pow(a.y - b.y, 2), 0.5);
 }
 
-double minimal_distance(vector<int> x, vector<int> y) 
+void printPoints(std::vector<Point> v)
 {
-	std::vector<Point> points(x.size());
-
-	for (size_t i = 0; i < x.size(); i++) {
-		double d = pow(pow(x[i], 2) + pow(y[i], 2), 0.5);
-		points[i] = {x[i], y[i], d};
+	for (auto& el : v) {
+		std::cout << "( " << el.x << ", " << el.y << " )\n";
 	}
-
-	sort(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.x < b.x;});
-	sort(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.y < b.y;});
-
-//	for (auto& el : points) {
-//		std::cout << "( " << el.x << ", " << el.y << ", " << el.distFromOrigin << " )\n";
-//	}
-
-	// If the pair of points are separated by a dist < minDist update minDist
-	double minDiff = calcDist(points[0], points[1]);
-	double currentDiff = minDiff;
-	std::vector<Point> closest(2);
-	closest[0] = points[0];
-	closest[1] = points[1];
-	for (size_t i = 1; i < points.size() - 1; i++) {
-		if (points[i].distFromOrigin == points[i + 1].distFromOrigin)
-			return 0.;
-		currentDiff = calcDist(points[i], points[i + 1]);
-		if (currentDiff < minDiff) {
-			closest[0] = points[i];
-			closest[1] = points[i + 1];
-			minDiff = currentDiff;
-		}
-	}
-
-//	for (auto& el : closest) {
-//		std::cout << "( " << el.x << ", " << el.y << ", " << el.distFromOrigin << " )\n";
-//	}
-
-	return calcDist(closest[0], closest[1]);//minDist;
-}
-
-int main() {
-	size_t n;
-	std::cin >> n;
-	vector<int> x(n);
-	vector<int> y(n);
-	for (size_t i = 0; i < n; i++) {
-		std::cin >> x[i] >> y[i];
-	}
-	std::cout << std::fixed;
-	std::cout << std::setprecision(9) << minimal_distance(x, y) << "\n";
 }
