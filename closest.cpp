@@ -39,7 +39,7 @@ double minimalSplitDistance(std::vector<Point>& Sy, double delta, double midPoin
 		}
 		strip.push_back(Sy[i]);		
 	}
-	if (strip.size() < 2) {
+	if (strip.size() <= 1) {
 		return minDist;
 	}
 	
