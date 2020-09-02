@@ -34,17 +34,13 @@ void stressTest(double(*driverFunc)(std::vector<Point> v), bool repeats)
 		makeTestVec(v, n, maxNum);
 		printVec(v, 0);
 
-		Pair bClosest = bruteClosest(v.begin(), v.end());
-		double res = bClosest.dist;
+		double res = bruteClosest(v.begin(), v.end());
 		double computedRes = driverFunc(v);
 		if (computedRes != res) {
 			std::cout << "Wrong answer:\n";
 			std::cout << "TEST:\t";
 			printVec(v, 0);
 			std::cout << "Brute force result:\t" << res << "\n";
-			std::cout << "Closest pair by Brute force:\n";
-			std::cout << "(" << bClosest.a.x << ", " << bClosest.a.y << "), ";
-			std::cout << "(" << bClosest.b.x << ", " << bClosest.b.y << ")\n";
 			std::cout << "Computed result:\t" << computedRes << "\n";
 
 			break;
