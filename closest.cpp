@@ -34,7 +34,7 @@ double minimalSplitDistance(std::vector<Point>& Sy, double delta, double midPoin
 	double minDist = -1;
 	std::vector<Point> strip;
 	for (size_t i = 0; i < Sy.size(); i++) {
-		if (abs(Sy[i].x - midPoint) > delta) {
+		if (abs(Sy[i].x - midPoint) >= delta) {
 			continue;
 		}
 		strip.push_back(Sy[i]);		
@@ -44,8 +44,8 @@ double minimalSplitDistance(std::vector<Point>& Sy, double delta, double midPoin
 	}
 	
 	for (size_t i = 0; i < strip.size(); i++) {
-		for (size_t j = i + 1; j <= i + 7 && j < strip.size(); j++) {
-			double currentDist = calcDist(Sy[i], Sy[j]);
+		for (size_t j = i + 1; j < i + 6 && j < strip.size(); j++) {
+			double currentDist = calcDist(strip[i], strip[j]);
 			if (currentDist < minDist || minDist == -1) {
 				minDist = currentDist;
 			}
@@ -54,6 +54,7 @@ double minimalSplitDistance(std::vector<Point>& Sy, double delta, double midPoin
 	return minDist;
 }
 
+// See this approach re: improved sorting efficiency: https://stackoverflow.com/a/7762162/3590673
 double minimalDistance(It SxStart, It SxEnd, std::vector<Point>& Sy)
 {
 	// Base case
@@ -64,9 +65,9 @@ double minimalDistance(It SxStart, It SxEnd, std::vector<Point>& Sy)
 	if (size < 3) {
 		return calcDist(*SxStart, *std::next(SxStart));
 	}
-//	if (size <= 4) {
-//		return bruteClosest(SxStart, SxEnd); 
-//	}
+	if (size <= 4) {
+		return bruteClosest(SxStart, SxEnd); 
+	}
 
 	// Determine limits
 	auto median = std::next(SxStart, size / 2);
@@ -97,10 +98,10 @@ double minimalDistance(It SxStart, It SxEnd, std::vector<Point>& Sy)
 double minimalDistance(std::vector<Point> points) 
 {
 	sort(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.x < b.x; });
-//	const bool hasAdjacent = std::adjacent_find(points.begin(), points.end()) != points.end();
-//	if (hasAdjacent) {
-//		return .0;
-//	}
+	const bool hasAdjacent = std::adjacent_find(points.begin(), points.end()) != points.end();
+	if (hasAdjacent) {
+		return .0;
+	}
 	std::vector<Point> Sx = points;
 	sort(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.y < b.y; });
 	return minimalDistance(Sx.begin(), Sx.end(), points);
