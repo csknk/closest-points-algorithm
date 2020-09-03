@@ -22,7 +22,7 @@ double bruteClosest(const std::vector<Point>& v);
 double bruteClosest(It start, It End);
 void printPoints(std::vector<Point> v);
 double minimalDistance(It SxStart, It SxEnd, std::vector<Point>& Sy);
-double minimalSplitDistance(std::vector<Point>& Sy, double delta, double midPoint);
+double minimalSplitDistance(It SyStart, It SyEnd, double delta, double midPoint);
 double minimalDistance(std::vector<Point> points); 
 
 #ifdef STRESS_TEST
@@ -85,7 +85,11 @@ double minimalDistance(It SxStart, It SxEnd, std::vector<Point>& Sy)
 	} else {
 		delta = dl < dr ? dl : dr;
 	}
-	auto ds = minimalSplitDistance(Sy, delta, midPoint);
+
+	// Merge Sy subarrays here
+	// ---
+	
+	auto ds = minimalSplitDistance(SyStart, SyEnd, delta, midPoint);
 
 	// Merge
 	if (ds == -1) {
