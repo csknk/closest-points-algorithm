@@ -104,7 +104,7 @@ double minimalDistance(std::vector<Point> points)
 	}
 	std::vector<Point> Sx = points;
 	sort(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.y < b.y; });
-	return minimalDistance(Sx.begin(), Sx.end(), points);
+	return pow(minimalDistance(Sx.begin(), Sx.end(), points), 0.5);
 }
 
 int main() {
@@ -152,7 +152,10 @@ double bruteClosest(const std::vector<Point>& v)
 
 double calcDist(Point a, Point b)
 {
-	return pow(pow(a.x - b.x, 2) + pow(a.y - b.y, 2), 0.5);
+	// calc the square of max dist to save multiple computations of the
+	// square root.
+	return pow(a.x - b.x, 2) + pow(a.y - b.y, 2);
+//	return pow(pow(a.x - b.x, 2) + pow(a.y - b.y, 2), 0.5);
 }
 
 void printPoints(std::vector<Point> v)

@@ -34,7 +34,7 @@ void stressTest(double(*driverFunc)(std::vector<Point> v), bool repeats)
 		makeTestVec(v, n, maxNum);
 		printVec(v, 0);
 
-		double res = bruteClosest(v.begin(), v.end());
+		double res = pow(bruteClosest(v.begin(), v.end()), 0.5);
 		double computedRes = driverFunc(v);
 		if (computedRes != res) {
 			std::cout << "Wrong answer:\n";
